@@ -16,7 +16,7 @@ if(isset($_POST['login'])) {
         if(password_verify($authentication, $token)) {
             session_start();
             $_SESSION['token'] = true;
-            header('Location: ../login');
+            header('Location: ../');
             exit();
         } else {
             $_SESSION['status'] = 'error';

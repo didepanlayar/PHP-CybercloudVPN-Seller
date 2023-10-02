@@ -1,9 +1,9 @@
 <?php
 
-$serverhost   = "mariadb";
+$serverhost   = "localhost";
 $username     = "root";
 $password     = "root";
-$database     = "db_sellervpn";
+$database     = "database_name";
 
 $connect = mysqli_connect($serverhost, $username, $password, $database);
 
