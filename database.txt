@@ -1,2 +1,10 @@
 CREATE DATABASE database_name;
 CREATE TABLE users (user_id INT(11) AUTO_INCREMENT PRIMARY KEY, user_name VARCHAR(250), user_email VARCHAR(100), user_token VARCHAR(250));
+CREATE TABLE settings (setting_id INT(11) AUTO_INCREMENT PRIMARY KEY, setting_name VARCHAR(250), setting_value VARCHAR(250));
+INSERT INTO settings (setting_name, setting_value) VALUES ('sitetitle', 'Cybercloud VPN Seller');
+INSERT INTO settings (setting_name, setting_value) VALUES ('sitename', 'Cybercloud VPN');
+INSERT INTO settings (setting_name, setting_value) VALUES ('siteurl', 'https://cybercloudvpn.com');
+INSERT INTO settings (setting_name, setting_value) VALUES ('watoken', '1234567890');
+INSERT INTO settings (setting_name, setting_value) VALUES ('wachatid', '1234567890');
+INSERT INTO settings (setting_name, setting_value) VALUES ('tgtoken', '1234567890');
+INSERT INTO settings (setting_name, setting_value) VALUES ('tgchatid', '1234567890');

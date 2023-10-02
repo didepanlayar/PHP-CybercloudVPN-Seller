@@ -101,3 +101,27 @@ if(isset($_POST['save-users'])) {
 
     mysqli_close($connect);
 }
+
+if(isset($_POST['save-settings'])) {
+    $sitetitle  = $_POST['site-title'];
+    $sitename   = $_POST['display-name'];
+    $siteurl    = $_POST['site-address'];
+    $watoken    = $_POST['whatsapp'];
+    $wachatid   = $_POST['wachatid'];
+    $tgtoken    = $_POST['telegram'];
+    $tgchatid   = $_POST['tgchatid'];
+
+    $query = "UPDATE settings SET setting_value = CASE WHEN setting_name = 'sitetitle' THEN ? WHEN setting_name = 'sitename' THEN ? WHEN setting_name = 'siteurl' THEN ? WHEN setting_name = 'watoken' THEN ? WHEN setting_name = 'wachatid' THEN ? WHEN setting_name = 'tgtoken' THEN ? WHEN setting_name = 'tgchatid' THEN ? END WHERE setting_name IN ('sitetitle', 'sitename', 'siteurl', 'watoken', 'wachatid', 'tgtoken', 'tgchatid')";
+    $statement = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($statement, 'sssssss', $sitetitle, $sitename, $siteurl, $watoken, $wachatid, $tgtoken, $tgchatid);
+    if(mysqli_stmt_execute($statement)) {
+        mysqli_stmt_close($statement);
+        $_SESSION['status'] = 'success';
+        $_SESSION['status_message'] = 'Settings updated.';
+        mysqli_close($connect);
+        header('Location: ../settings.php');
+        exit();
+    } else {
+        die("Error! " . mysqli_error($connect));
+    }
+}
