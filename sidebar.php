@@ -4,6 +4,7 @@
             <a class="logo" href="<?php echo $base_url; ?>">Cybercloud VPN</a>
             <ul  class="list-unstyled accordion-menu">
                 <li><a href="<?php echo $base_url; ?>"><i data-feather="home"></i>Dashboard</a></li>
+                <li><a href="users.php"><i data-feather="users"></i>Users</a></li>
             </ul>
             <a href="#" id="sidebar-collapsed-toggle"><i data-feather="arrow-right"></i></a>
         </div>

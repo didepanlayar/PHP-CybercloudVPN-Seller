@@ -33,3 +33,71 @@ if(isset($_POST['login'])) {
 
     mysqli_close($connect);
 }
+
+if(isset($_POST['save-users'])) {
+    $get_id             = 1;
+    $get_name           = $_POST['user-name'];
+    $get_email          = $_POST['user-email'];
+    $get_authentication = $_POST['authentication'];
+
+    $query = "SELECT * FROM users WHERE user_id = ?";
+    $statement = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($statement, 'i', $get_id);
+    mysqli_stmt_execute($statement);
+    mysqli_stmt_store_result($statement);
+
+    if (mysqli_stmt_num_rows($statement) === 0) {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = 'User not found.';
+        header('Location: ../users.php');
+        exit();
+    }
+
+    if(!empty($get_name)) {
+        $query = "UPDATE users SET user_name = ? WHERE user_id = ?";
+        $statement = mysqli_prepare($connect, $query);
+        mysqli_stmt_bind_param($statement, 'si', $get_name, $get_id);
+        if(mysqli_stmt_execute($statement)) {
+            mysqli_stmt_close($statement);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Name updated.';
+            header('Location: ../users.php');
+            exit();
+        } else {
+            die("Error! " . mysqli_error($connect));
+        }
+    }
+
+    if(!empty($get_email)) {
+        $query = "UPDATE users SET user_email = ? WHERE user_id = ?";
+        $statement = mysqli_prepare($connect, $query);
+        mysqli_stmt_bind_param($statement, 'si', $get_email, $get_id);
+        if(mysqli_stmt_execute($statement)) {
+            mysqli_stmt_close($statement);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Email updated.';
+            header('Location: ../users.php');
+            exit();
+        } else {
+            die("Error! " . mysqli_error($connect));
+        }
+    }
+
+    if(!empty($get_authentication)) {
+        $hash_token = password_hash($get_authentication, PASSWORD_BCRYPT);
+        $query = "UPDATE users SET user_token = ? WHERE user_id = ?";
+        $statement = mysqli_prepare($connect, $query);
+        mysqli_stmt_bind_param($statement, 'si', $hash_token, $get_id);
+        if(mysqli_stmt_execute($statement)) {
+            mysqli_stmt_close($statement);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Password updated.';
+            header('Location: ../users.php');
+            exit();
+        } else {
+            die("Error! " . mysqli_error($connect));
+        }
+    }
+
+    mysqli_close($connect);
+}

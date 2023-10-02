@@ -8,7 +8,7 @@ function status_message() {
     if(isset($_SESSION['status']) && $_SESSION['status'] === 'success') {
         echo '
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> ' . $status_message . '
+            <strong>Success!</strong> ' . $status_message . '
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>';
     }

@@ -22,5 +22,21 @@
             }
         });
     </script>
+    <script>
+        var inputAuthentication = document.getElementById('authentication');
+        var btnChangePassword = document.getElementById('btn-change-password');
+
+        btnChangePassword.addEventListener('click', function() {
+            if(inputAuthentication.disabled === true) {
+                inputAuthentication.removeAttribute('disabled');
+                inputAuthentication.focus();
+                btnChangePassword.innerText = 'Cancel';
+            } else {
+                inputAuthentication.setAttribute('disabled', 'disabled');
+                btnChangePassword.innerText = 'Change Password';
+                inputAuthentication.value = '';
+            }
+        });
+    </script>
 </body>
 </html>
