@@ -20,11 +20,13 @@ if(isset($_POST['login'])) {
             exit();
         } else {
             $_SESSION['status'] = 'error';
+            $_SESSION['status_message'] = 'The token you entered is incorrect.';
             header('Location: ../login.php');
             exit();
         }
     } else {
-        $_SESSION['status'] = 'wrong';
+        $_SESSION['status'] = 'info';
+        $_SESSION['status_message'] = 'Please contact the administrator.';
         header('Location: ../login.php');
         exit();
     }

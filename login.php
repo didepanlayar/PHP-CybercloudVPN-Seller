@@ -1,6 +1,7 @@
 <?php
 
 require_once 'includes/session.php';
+require_once 'includes/status.php';
 
 login();
 
@@ -22,17 +23,7 @@ include 'header.php';
                             <p>Welcome to Cybercloud VPN</p>
                             <p>Please Sign-in to your account.</p>
                         </div>
-                        <?php if(isset($_SESSION['status']) && $_SESSION['status'] === 'error') : ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error!</strong> The token you entered is incorrect.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php elseif(isset($_SESSION['status']) && $_SESSION['status'] === 'wrong') : ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error!</strong> Please contact the administrator.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php endif; unset($_SESSION['status']); ?>
+                        <?php status_message(); ?>
                         <form action="includes/controller.php" method="POST">
                             <div class="mb-3">
                                 <div class="form-floating">
