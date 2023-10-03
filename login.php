@@ -16,23 +16,13 @@ include 'header.php';
                 <div class="card login-box-container">
                     <div class="card-body">
                         <div class="authent-logo">
-                            <a href="<?php echo $base_url; ?>">Cybercloud VPN</a>
+                            <a href="<?php echo $data['siteurl']; ?>"><?php echo $data['sitename']; ?></a>
                         </div>
                         <div class="authent-text">
-                            <p>Welcome to Cybercloud VPN</p>
+                            <p>Welcome to <?php echo $data['sitename']; ?></p>
                             <p>Please Sign-in to your account.</p>
                         </div>
-                        <?php if(isset($_SESSION['status']) && $_SESSION['status'] === 'error') : ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error!</strong> The token you entered is incorrect.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php elseif(isset($_SESSION['status']) && $_SESSION['status'] === 'wrong') : ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Error!</strong> Please contact the administrator.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php endif; unset($_SESSION['status']); ?>
+                        <?php status_message(); ?>
                         <form action="includes/controller.php" method="POST">
                             <div class="mb-3">
                                 <div class="form-floating">
