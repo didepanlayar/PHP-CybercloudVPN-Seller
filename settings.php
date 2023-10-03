@@ -1,8 +1,6 @@
 <?php
 
 require_once 'includes/session.php';
-require_once 'includes/config.php';
-require_once 'includes/status.php';
 
 get_session();
 
@@ -18,22 +16,6 @@ include 'sidebar.php';
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-                                <?php
-
-                                $get_settings = "SELECT setting_name, setting_value FROM settings";
-                                $statement = mysqli_prepare($connect, $get_settings);
-                                mysqli_stmt_execute($statement);
-                                $result = mysqli_stmt_get_result($statement);
-
-                                $data = array();
-
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    $data[$row['setting_name']] = $row['setting_value'];
-                                }
-
-                                mysqli_close($connect);
-
-                                ?>
                                 <form action="includes/controller.php" method="POST">
                                     <div class="modal-body">
                                         <div class="mb-3">

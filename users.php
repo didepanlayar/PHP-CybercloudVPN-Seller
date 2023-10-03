@@ -1,8 +1,6 @@
 <?php
 
 require_once 'includes/session.php';
-require_once 'includes/config.php';
-require_once 'includes/status.php';
 
 get_session();
 
@@ -20,17 +18,17 @@ include 'sidebar.php';
                             <div class="card-body">
                                 <?php
 
-                                $get_user = "SELECT * FROM users LIMIT 1";
-                                $statement = mysqli_prepare($connect, $get_user);
-                                mysqli_stmt_execute($statement);
-                                $result = mysqli_stmt_get_result($statement);
+                                $sql_users   = "SELECT * FROM users LIMIT 1";
+                                $query_users = mysqli_prepare($connection, $sql_users);
+                                mysqli_stmt_execute($query_users);
+                                $result = mysqli_stmt_get_result($query_users);
 
-                                if($row = mysqli_fetch_assoc($result)) {
+                                if ($row = mysqli_fetch_assoc($result)) {
                                     $user_name  = $row['user_name'];
                                     $user_email = $row['user_email'];
                                 }
 
-                                mysqli_close($connect);
+                                mysqli_stmt_close($query_users);
 
                                 ?>
                                 <form action="includes/controller.php" method="POST">

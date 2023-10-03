@@ -1,7 +1,6 @@
 <?php
 
 require_once 'includes/session.php';
-require_once 'includes/status.php';
 
 login();
 
@@ -17,10 +16,10 @@ include 'header.php';
                 <div class="card login-box-container">
                     <div class="card-body">
                         <div class="authent-logo">
-                            <a href="<?php echo $base_url; ?>">Cybercloud VPN</a>
+                            <a href="<?php echo $data['siteurl']; ?>"><?php echo $data['sitename']; ?></a>
                         </div>
                         <div class="authent-text">
-                            <p>Welcome to Cybercloud VPN</p>
+                            <p>Welcome to <?php echo $data['sitename']; ?></p>
                             <p>Please Sign-in to your account.</p>
                         </div>
                         <?php status_message(); ?>
