@@ -4,6 +4,7 @@
             <a class="logo" href="<?php echo $data['siteurl']; ?>"><?php echo $data['sitename']; ?></a>
             <ul  class="list-unstyled accordion-menu">
                 <li><a href="<?php echo $data['siteurl']; ?>"><i data-feather="home"></i>Dashboard</a></li>
+                <li><a href="<?php echo $data['siteurl']; ?>/servers.php"><i data-feather="server"></i>Servers</a></li>
                 <li><a href="<?php echo $data['siteurl']; ?>/users.php"><i data-feather="users"></i>Users</a></li>
                 <li><a href="<?php echo $data['siteurl']; ?>/settings.php"><i data-feather="settings"></i>Settings</a></li>
             </ul>
