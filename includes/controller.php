@@ -180,3 +180,54 @@ if (isset($_POST['save-settings'])) {
     header('Location: ../settings.php');
     exit();
 }
+
+if (isset($_POST['upload-server'])) {
+    $file_server = $_FILES["file-server"]["tmp_name"];
+
+    require '../vendor/autoload.php';
+
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_server);
+    $worksheet   = $spreadsheet->getActiveSheet();
+
+    $sql_delete_server = "DELETE FROM servers";
+    if (mysqli_query($connection, $sql_delete_server)) {
+        $sql_server_increment = "ALTER TABLE servers AUTO_INCREMENT = 1";
+        mysqli_query($connection, $sql_server_increment);
+
+        $firstRow = true;
+
+        foreach ($worksheet->getRowIterator() as $row) {
+            if ($firstRow) {
+                $firstRow = false;
+                continue;
+            }
+
+            $data   = $row->getcellIterator();
+            $values = array();
+
+            foreach ($data as $cell) {
+                $values[] = $cell->getValue();
+            }
+
+            $sql_server   = "INSERT INTO servers (server_type, server_name, server_host, server_interval, server_contact, server_keyword, server_keyword_value, server_port) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $query_server = mysqli_prepare($connection, $sql_server);
+            mysqli_stmt_bind_param($query_server, 'sssisssi', $values[0], $values[1], $values[2], $values[3], $values[4], $values[5], $values[6], $values[7]);
+
+            if (mysqli_stmt_execute($query_server)) {
+                $_SESSION['status'] = 'success';
+                $_SESSION['status_message'] = 'Server uploaded.';
+            } else {
+                $_SESSION['status'] = 'error';
+                $_SESSION['status_message'] = mysqli_error($connection);
+            }
+        }
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = mysqli_error($connection);
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../servers.php');
+    exit();
+}
