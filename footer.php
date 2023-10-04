@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="<?php echo $data['siteurl']; ?>/assets/plugins/perfectscroll/perfect-scrollbar.min.js"></script>
     <script src="<?php echo $data['siteurl']; ?>/assets/plugins/pace/pace.min.js"></script>
+    <script src="<?php echo $data['siteurl']; ?>/assets/plugins/DataTables/datatables.min.js"></script>
     <script src="<?php echo $data['siteurl']; ?>/assets/js/main.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -46,6 +47,14 @@
                 return true;
             }
         }
+
+        $(document).ready(function() {
+            const tableServer = document.getElementById('table-server');
+
+            if (tableServer) {
+                $('#table-server').DataTable();
+            }
+        });
     </script>
 </body>
 </html>

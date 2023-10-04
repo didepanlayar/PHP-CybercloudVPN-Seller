@@ -20,6 +20,7 @@ require_once 'includes/status.php';
     <link href="<?php echo $data['siteurl']; ?>/assets/plugins/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="<?php echo $data['siteurl']; ?>/assets/plugins/perfectscroll/perfect-scrollbar.css" rel="stylesheet">
     <link href="<?php echo $data['siteurl']; ?>/assets/plugins/pace/pace.css" rel="stylesheet">
+    <link href="<?php echo $data['siteurl']; ?>/assets/plugins/DataTables/datatables.min.css" rel="stylesheet">  
     <!-- Theme Styles -->
     <link href="<?php echo $data['siteurl']; ?>/assets/css/main.min.css" rel="stylesheet">
     <link href="<?php echo $data['siteurl']; ?>/assets/css/custom.css" rel="stylesheet">
