@@ -234,8 +234,6 @@ if (isset($_POST['upload-server'])) {
 }
 
 if (isset($_POST['send-create'])) {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
     $protocol       = $_POST['protocol'];
     $name           = $_POST['name'];
     $phone          = $_POST['whatsapp'];
@@ -289,7 +287,7 @@ if (isset($_POST['send-create'])) {
                 mysqli_stmt_bind_param($query_order, 'ssssssss', $get_protocol, $name, $phone, $server_name, $host, $username, $status, $expired);
 
                 if (mysqli_stmt_execute($query_order)) {
-                    send_create($name, $phone, $new_message, $data);
+                    send_user($name, $phone, $new_message, $data);
                     send_group($name, $phone, $bot_message, $data);
                     $_SESSION['status'] = 'success';
                     $_SESSION['status_message'] = 'Order completed.';
@@ -310,5 +308,40 @@ if (isset($_POST['send-create'])) {
     mysqli_close($connection);
 
     header('Location: ../create.php');
+    exit();
+}
+
+if (isset($_POST['send-renew'])) {
+    $id             = $_POST['order-id'];
+    $protocol       = $_POST['protocol'];
+    $name           = $_POST['name'];
+    $phone          = $_POST['whatsapp'];
+    $server         = $_POST['server'];
+    $host           = $_POST['host'];
+    $username       = $_POST['username'];
+    $status         = 2;
+    $expired        = $_POST['expired'];
+    $new_message    = "Masa aktif akun VPN Premium anda berhasil diperpanjang, berikut adalah informasi akun anda:\n\n$protocol\nServer: $server\nHost: $host\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+    $bot_message    = "Pengguna Akun VPN Premium berhasil diperbarui.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+
+    if ($id) {
+        $sql_renew   = "UPDATE orders SET order_status = ?, order_expired = ? WHERE order_id = ?";
+        $query_renew = mysqli_prepare($connection, $sql_renew);
+        mysqli_stmt_bind_param($query_renew, 'isi', $status, $expired, $id);
+
+        if (mysqli_stmt_execute($query_renew)) {
+            send_user($name, $phone, $new_message, $data);
+            send_group($name, $phone, $bot_message, $data);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Order updated.';
+        } else {
+            $_SESSION['status'] = 'error';
+            $_SESSION['status_message'] = mysqli_error($connection);
+        }
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../renew.php');
     exit();
 }

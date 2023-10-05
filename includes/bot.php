@@ -2,8 +2,8 @@
 
 require_once 'config.php';
 
-function send_create($name, $phone, $new_message, $data) {
-    // WhatsApp: Create
+function send_user($name, $phone, $new_message, $data) {
+    // WhatsApp: User
     $curl_send = curl_init();
     curl_setopt_array($curl_send, array(
         CURLOPT_URL => 'https://api.fonnte.com/send',
