@@ -23,6 +23,7 @@ if (isset($_REQUEST['id'])) {
         $get_protocol = $row['order_protocol'];
         $get_name     = $row['order_name'];
         $get_phone    = $row['order_phone'];
+        $get_server   = $row['order_server'];
         $get_host     = $row['order_host'];
         $get_expired  = $row['order_expired'];
         $get_username = $row['order_username'];
@@ -44,45 +45,33 @@ if (isset($_REQUEST['id'])) {
                             <div class="card-body">
                                 <form action="includes/controller.php" method="POST">
                                     <div class="modal-body">
+                                        <?php if (isset($_REQUEST['id'])) : ?>
+                                            <input type="hidden" name="order-id" value="<?php echo $order_id; ?>">
+                                            <input type="hidden" name="server" value="<?php echo $get_server; ?>">
+                                        <?php endif; ?>
                                         <div class="mb-3">
                                             <label for="protocol" class="form-label">Protocol</label>
-                                            <select class="form-select" name="protocol" <?php if (isset($_REQUEST['id'])) { echo 'disabled'; } ?> required>
-                                                <option value="">Select Protocol</option>
-                                                <?php if ($get_protocol == 'SSH & OpenVPN') : ?>
-                                                    <option value="renew-ssh" selected="">SSH & OpenVPN</option>
-                                                <?php elseif ($get_protocol == 'Vmess') : ?>
-                                                    <option value="renew-vmess" selected="">Vmess</option>
-                                                <?php elseif ($get_protocol == 'Vless') : ?>
-                                                    <option value="renew-vless" selected="">Vless</option>
-                                                <?php elseif ($get_protocol == 'Trojan') : ?>
-                                                    <option value="renew-trojan" selected="">Trojan</option>
-                                                <?php else : ?>
-                                                    <option value="renew-ssh">SSH & OpenVPN</option>
-                                                    <option value="renew-vmess">Vmess</option>
-                                                    <option value="renew-vless">Vless</option>
-                                                    <option value="renew-trojan">Trojan</option>
-                                                <?php endif; ?>
-                                            </select>
+                                            <input type="text" class="form-control" id="protocol" name="protocol" placeholder="SSH & OpenVPN" value="<?php echo $get_protocol; ?>" readonly required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" value="<?php echo $get_name; ?>" <?php if (isset($_REQUEST['id'])) { echo 'disabled'; } ?> required>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" value="<?php echo $get_name; ?>" readonly required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="whatsapp" class="form-label">WhatsApp</label>
-                                            <input type="number" class="form-control" id="whatsapp" name="whatsapp" placeholder="08123456789" value="<?php echo $get_phone; ?>" <?php if (isset($_REQUEST['id'])) { echo 'disabled'; } ?> onkeypress="return setNumber(event)" required>
+                                            <input type="number" class="form-control" id="whatsapp" name="whatsapp" placeholder="08123456789" value="<?php echo $get_phone; ?>" readonly onkeypress="return setNumber(event)" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="host" class="form-label">Host/IP</label>
-                                            <input type="text" class="form-control" id="host" name="host" placeholder="domain.com" value="<?php echo $get_host; ?>" <?php if (isset($_REQUEST['id'])) { echo 'disabled'; } ?> required>
+                                            <input type="text" class="form-control" id="host" name="host" placeholder="domain.com" value="<?php echo $get_host; ?>" readonly required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="expired" class="form-label">Expired</label>
-                                            <input type="date" class="form-control" id="expired" name="expired" value="<?php echo $get_expired; ?>" required>
+                                            <input type="date" class="form-control" id="expired" name="expired" value="<?php echo $get_expired; ?>" <?php if (!isset($_REQUEST['id'])) { echo 'readonly'; } ?> required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Username</label>
-                                            <input type="text" class="form-control" id="username" name="username" placeholder="johndoe" value="<?php echo $get_username; ?>" <?php if (isset($_REQUEST['id'])) { echo 'disabled'; } ?> required>
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="johndoe" value="<?php echo $get_username; ?>" readonly required>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

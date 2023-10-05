@@ -5,13 +5,7 @@
             <ul  class="list-unstyled accordion-menu">
                 <li><a href="<?php echo $data['siteurl']; ?>"><i data-feather="home"></i>Dashboard</a></li>
                 <li><a href="<?php echo $data['siteurl']; ?>/servers.php"><i data-feather="server"></i>Servers</a></li>
-                <li>
-                    <a href="#"><i data-feather="shopping-cart"></i>Orders<i class="fas fa-chevron-right dropdown-icon"></i></a>
-                    <ul class="">
-                        <li><a href="<?php echo $data['siteurl']; ?>/orders.php"><i class="fa fa-caret-right"></i>All Orders</li>
-                        <li><a href="<?php echo $data['siteurl']; ?>/renew.php"><i class="fa fa-caret-right"></i>Renew</li>
-                    </ul>
-                </li>
+                <li><a href="<?php echo $data['siteurl']; ?>/orders.php"><i data-feather="shopping-cart"></i>Orders</a></li>
                 <li><a href="<?php echo $data['siteurl']; ?>/users.php"><i data-feather="users"></i>Users</a></li>
                 <li><a href="<?php echo $data['siteurl']; ?>/settings.php"><i data-feather="settings"></i>Settings</a></li>
             </ul>
