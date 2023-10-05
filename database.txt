@@ -10,3 +10,5 @@ INSERT INTO settings (setting_name, setting_value) VALUES ('tgtoken', '123456789
 INSERT INTO settings (setting_name, setting_value) VALUES ('tgchatid', '1234567890');
 CREATE TABLE servers (server_id INT(11) AUTO_INCREMENT PRIMARY KEY, server_type VARCHAR(50), server_name VARCHAR(250), server_host VARCHAR(250), server_interval INT(11), server_contact VARCHAR(250), server_keyword VARCHAR(250), server_keyword_value VARCHAR(250), server_port INT(5));
 CREATE TABLE orders (order_id INT(11) AUTO_INCREMENT PRIMARY KEY, order_protocol VARCHAR(50), order_name VARCHAR(250), order_phone VARCHAR(15), order_server VARCHAR(250), order_host VARCHAR(250), order_username VARCHAR(50), order_expired DATE);
+ALTER TABLE orders ADD order_status INT(1) AFTER order_username;
+UPDATE orders SET order_status = 1 WHERE order_id = 1;

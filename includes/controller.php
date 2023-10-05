@@ -282,10 +282,11 @@ if (isset($_POST['send-create'])) {
                 }
 
                 $bot_message  = "Selamat! Akun VPN Premium berhasil dibuat.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+                $status       = 1;
 
-                $sql_order   = "INSERT INTO orders (order_protocol, order_name, order_phone, order_server, order_host, order_username, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $sql_order   = "INSERT INTO orders (order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $query_order = mysqli_prepare($connection, $sql_order);
-                mysqli_stmt_bind_param($query_order, 'sssssss', $get_protocol, $name, $phone, $server_name, $host, $username, $expired);
+                mysqli_stmt_bind_param($query_order, 'ssssssss', $get_protocol, $name, $phone, $server_name, $host, $username, $status, $expired);
 
                 if (mysqli_stmt_execute($query_order)) {
                     send_create($name, $phone, $new_message, $data);
