@@ -54,6 +54,46 @@
             if (tableServer) {
                 $('#table-server').DataTable();
             }
+
+            const createPage = document.getElementById('protocol');
+            const createSsh = document.getElementById('create-ssh');
+            const createVmess = document.getElementById('create-vmess');
+            const createVless = document.getElementById('create-vless');
+            const createTrojan = document.getElementById('create-trojan');
+
+            if (createPage) {
+                createSsh.style.display = 'none';
+                createVmess.style.display = 'none';
+                createVless.style.display = 'none';
+                createTrojan.style.display = 'none';
+
+                createPage.addEventListener('change', function() {
+                    var protocol = this.value;
+
+                    createSsh.style.display = protocol === 'create-ssh' ? 'block' : 'none';
+                    createVmess.style.display = protocol === 'create-vmess' ? 'block' : 'none';
+                    createVless.style.display = protocol === 'create-vless' ? 'block' : 'none';
+                    createTrojan.style.display = protocol === 'create-trojan' ? 'block' : 'none';
+
+                    if (protocol === 'create-ssh') {
+                        createSsh.querySelectorAll('input, textarea').forEach(function(elem) {
+                            elem.setAttribute('required', 'required');
+                        });
+                    } else if (protocol === 'create-vmess') {
+                        createVmess.querySelectorAll('input, textarea').forEach(function(elem) {
+                            elem.setAttribute('required', 'required');
+                        });
+                    } else if (protocol === 'create-vless') {
+                        createVless.querySelectorAll('input, textarea').forEach(function(elem) {
+                            elem.setAttribute('required', 'required');
+                        });
+                    } else if (protocol === 'create-trojan') {
+                        createTrojan.querySelectorAll('input, textarea').forEach(function(elem) {
+                            elem.setAttribute('required', 'required');
+                        });
+                    }
+                });
+            }
         });
     </script>
 </body>
