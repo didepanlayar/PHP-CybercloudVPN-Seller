@@ -37,6 +37,7 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                             <th>Protocol</th>
                                             <th>status</th>
                                             <th>Expired</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -55,6 +56,9 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     <?php endif; ?>
                                                 </td>
                                                 <td><?php echo $order['order_expired']; ?></td>
+                                                <td>
+                                                    <a href="renew.php?id=<?php echo $order['order_id']; ?>" class="btn btn-outline-primary btn-sm"><i class="fa fa-retweet"></i></a>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
