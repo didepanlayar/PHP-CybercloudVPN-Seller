@@ -3,6 +3,7 @@
 session_start();
 
 require_once 'config.php';
+require_once 'bot.php';
 
 if (isset($_POST['login'])) {
     $authentication = $_POST['authentication'];
@@ -178,5 +179,199 @@ if (isset($_POST['save-settings'])) {
     mysqli_close($connection);
 
     header('Location: ../settings.php');
+    exit();
+}
+
+if (isset($_POST['upload-server'])) {
+    $file_server = $_FILES["file-server"]["tmp_name"];
+
+    require '../vendor/autoload.php';
+
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_server);
+    $worksheet   = $spreadsheet->getActiveSheet();
+
+    $sql_delete_server = "DELETE FROM servers";
+    if (mysqli_query($connection, $sql_delete_server)) {
+        $sql_server_increment = "ALTER TABLE servers AUTO_INCREMENT = 1";
+        mysqli_query($connection, $sql_server_increment);
+
+        $firstRow = true;
+
+        foreach ($worksheet->getRowIterator() as $row) {
+            if ($firstRow) {
+                $firstRow = false;
+                continue;
+            }
+
+            $data   = $row->getcellIterator();
+            $values = array();
+
+            foreach ($data as $cell) {
+                $values[] = $cell->getValue();
+            }
+
+            $sql_server   = "INSERT INTO servers (server_type, server_name, server_host, server_interval, server_contact, server_keyword, server_keyword_value, server_port) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $query_server = mysqli_prepare($connection, $sql_server);
+            mysqli_stmt_bind_param($query_server, 'sssisssi', $values[0], $values[1], $values[2], $values[3], $values[4], $values[5], $values[6], $values[7]);
+
+            if (mysqli_stmt_execute($query_server)) {
+                $_SESSION['status'] = 'success';
+                $_SESSION['status_message'] = 'Server uploaded.';
+            } else {
+                $_SESSION['status'] = 'error';
+                $_SESSION['status_message'] = mysqli_error($connection);
+            }
+        }
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = mysqli_error($connection);
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../servers.php');
+    exit();
+}
+
+if (isset($_POST['send-create'])) {
+    $protocol       = $_POST['protocol'];
+    $name           = $_POST['name'];
+    $phone          = $_POST['whatsapp'];
+    $host           = $_POST['host'];
+    $expired        = $_POST['expired'];
+    $username       = $_POST['username'];
+    $password       = $_POST['password'];
+    $payload_cdn    = $_POST['payload-cdn'];
+    $payload_path   = $_POST['payload-path'];
+    $vmess_uuid     = $_POST['vmess-uuid'];
+    $vmess_tls      = $_POST['vmess-tls'];
+    $vmess_ntls     = $_POST['vmess-ntls'];
+    $vless_uuid     = $_POST['vless-uuid'];
+    $vless_tls      = $_POST['vless-tls'];
+    $vless_ntls     = $_POST['vless-ntls'];
+    $key            = $_POST['key'];
+    $trojan_tls     = $_POST['trojan-tls'];
+
+    if (!empty($host)) {
+        $sql_get_server   = "SELECT server_name FROM servers WHERE server_host = ?";
+        $query_get_server = mysqli_prepare($connection, $sql_get_server);
+        mysqli_stmt_bind_param($query_get_server, 's', $host);
+        mysqli_stmt_execute($query_get_server);
+
+        if ($query_get_server) {
+            $result = mysqli_stmt_get_result($query_get_server);
+            $row = mysqli_fetch_assoc($result);
+
+            if ($row) {
+                $server_name = $row['server_name'];
+
+                if ($protocol == 'create-ssh') {
+                    $get_protocol = 'SSH & OpenVPN';
+                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nHost: $host\nWebsocket SSL: 443\nWebsocket HTTP: 80\nUsername: $username\nPassword: $password\nExpired: $expired\n\nPayload CDN:\n$payload_cdn\n\nPayload Path:\n$payload_path\n\nTerima kasih telah menggunakan layanan kami.";
+                } elseif ($protocol == 'create-vmess') {
+                    $get_protocol = 'Vmess';
+                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vmess_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vmess_tls\n\nConfig None TLS:\n$vmess_ntls\n\nTerima kasih telah menggunakan layanan kami.";
+                } elseif ($protocol == 'create-vless') {
+                    $get_protocol = 'Vless';
+                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vless_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vless_tls\n\nConfig None TLS:\n$vless_ntls\n\nTerima kasih telah menggunakan layanan kami.";
+                } elseif ($protocol == 'create-trojan') {
+                    $get_protocol = 'Trojan';
+                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort: 443\nKey: $key\nNetwork: ws\nPath: /trojan\nMulti Path: /yourbug/trojan\nExpired: $expired\n\nConfig TLS:\n$trojan_tls\n\nTerima kasih telah menggunakan layanan kami.";
+                }
+
+                $bot_message  = "Selamat! Akun VPN Premium berhasil dibuat.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+                $status       = 1;
+
+                $sql_order   = "INSERT INTO orders (order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $query_order = mysqli_prepare($connection, $sql_order);
+                mysqli_stmt_bind_param($query_order, 'ssssssss', $get_protocol, $name, $phone, $server_name, $host, $username, $status, $expired);
+
+                if (mysqli_stmt_execute($query_order)) {
+                    send_user($name, $phone, $new_message, $data);
+                    send_group($name, $phone, $bot_message, $data);
+                    $_SESSION['status'] = 'success';
+                    $_SESSION['status_message'] = 'Order completed.';
+                } else {
+                    $_SESSION['status'] = 'error';
+                    $_SESSION['status_message'] = $mysqli_error($connection);
+                }
+            } else {
+                $_SESSION['status'] = 'error';
+                $_SESSION['status_message'] = 'Server not found';
+            }
+        } else {
+            $_SESSION['status'] = 'error';
+            $_SESSION['status_message'] = $mysqli_error($connection);
+        }
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../create.php');
+    exit();
+}
+
+if (isset($_POST['send-renew'])) {
+    $id             = $_POST['order-id'];
+    $protocol       = $_POST['protocol'];
+    $name           = $_POST['name'];
+    $phone          = $_POST['whatsapp'];
+    $server         = $_POST['server'];
+    $host           = $_POST['host'];
+    $username       = $_POST['username'];
+    $status         = 2;
+    $expired        = $_POST['expired'];
+    $new_message    = "Masa aktif akun VPN Premium anda berhasil diperpanjang, berikut adalah informasi akun anda:\n\n$protocol\nServer: $server\nHost: $host\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+    $bot_message    = "Pengguna Akun VPN Premium berhasil diperbarui.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+
+    if ($id) {
+        $sql_renew   = "UPDATE orders SET order_status = ?, order_expired = ? WHERE order_id = ?";
+        $query_renew = mysqli_prepare($connection, $sql_renew);
+        mysqli_stmt_bind_param($query_renew, 'isi', $status, $expired, $id);
+
+        if (mysqli_stmt_execute($query_renew)) {
+            send_user($name, $phone, $new_message, $data);
+            send_group($name, $phone, $bot_message, $data);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Order updated.';
+        } else {
+            $_SESSION['status'] = 'error';
+            $_SESSION['status_message'] = mysqli_error($connection);
+        }
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../renew.php');
+    exit();
+}
+
+if (isset($_POST['send-delete'])) {
+    $id             = $_POST['order-id'];
+    $protocol       = $_POST['protocol'];
+    $name           = $_POST['name'];
+    $phone          = $_POST['whatsapp'];
+    $server         = $_POST['server'];
+    $username       = $_POST['username'];
+    $status         = 0;
+    $expired        = $_POST['expired'];
+    $bot_message    = "Pengguna berhasil dihapus.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+
+    $sql_delete   = "UPDATE orders SET order_status = ? WHERE order_id = ?";
+    $query_delete = mysqli_prepare($connection, $sql_delete);
+    mysqli_stmt_bind_param($query_delete, 'ii', $status, $id);
+
+    if (mysqli_stmt_execute($query_delete)) {
+        send_group($name, $phone, $bot_message, $data);
+        $_SESSION['status'] = 'success';
+        $_SESSION['status_message'] = 'Order deleted.';
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = mysqli_error($connection);
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../orders.php');
     exit();
 }
