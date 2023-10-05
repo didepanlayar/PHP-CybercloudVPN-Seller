@@ -57,9 +57,47 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                 </td>
                                                 <td><?php echo $order['order_expired']; ?></td>
                                                 <td>
+                                                    <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#user-<?php echo $order['order_id']; ?>"><i class="fa fa-eye"></i></button>
                                                     <a href="renew.php?id=<?php echo $order['order_id']; ?>" class="btn btn-outline-primary btn-sm"><i class="fa fa-retweet"></i></a>
                                                 </td>
                                             </tr>
+                                            <div class="modal fade" id="user-<?php echo $order['order_id']; ?>" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="ModalCenterTitle">Detail</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Name</label>
+                                                                <input type="text" class="form-control" value="<?php echo $order['order_name']; ?>" disabled>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Server</label>
+                                                                <input type="text" class="form-control" value="<?php echo $order['order_server']; ?>" disabled>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Host</label>
+                                                                <input type="text" class="form-control" value="<?php echo $order['order_host']; ?>" disabled>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Username</label>
+                                                                <input type="text" class="form-control" value="<?php echo $order['order_username']; ?>" disabled>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Expired</label>
+                                                                <input type="date" class="form-control" value="<?php echo $order['order_expired']; ?>" disabled>
+                                                            </div>
+                                                        </div>
+                                                        </form>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
