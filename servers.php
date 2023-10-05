@@ -9,9 +9,22 @@ $title = 'Servers';
 include 'header.php';
 include 'sidebar.php';
 
+$sql_servers  = "SELECT server_name, server_host, server_interval, server_port FROM servers";
+$query_server = mysqli_prepare($connection, $sql_servers);
+mysqli_stmt_execute($query_server);
+$result = mysqli_stmt_get_result($query_server);
+
+$servers = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 ?>
             <div class="main-wrapper">
-                <?php status_message(); ?>
+                <?php if (isset($_SESSION['status'])) : ?>
+                    <div class="row px-5 row-close">
+                        <div class="col">
+                            <?php status_message(); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 <div class="row">
                     <div class="col">
                         <div class="card">
@@ -27,27 +40,14 @@ include 'sidebar.php';
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-
-                                        $sql_servers  = "SELECT server_name, server_host, server_interval, server_port FROM servers";
-                                        $query_server = mysqli_prepare($connection, $sql_servers);
-                                        mysqli_stmt_execute($query_server);
-                                        $result = mysqli_stmt_get_result($query_server);
-
-                                        while ($rowPosts = mysqli_fetch_assoc($result)) :
-                                            $server_name     = $rowPosts['server_name'];
-                                            $server_host     = $rowPosts['server_host'];
-                                            $server_interval = $rowPosts['server_interval'];
-                                            $server_port     = $rowPosts['server_port'];
-
-                                        ?>
+                                        <?php foreach ($servers as $server) : ?>
                                             <tr>
-                                                <td><?php echo $server_name; ?></td>
-                                                <td><?php echo $server_host; ?></td>
-                                                <td><?php echo $server_interval; ?></td>
-                                                <td><?php echo $server_port; ?></td>
+                                                <td><?php echo $server['server_name']; ?></td>
+                                                <td><?php echo $server['server_host']; ?></td>
+                                                <td><?php echo $server['server_interval']; ?></td>
+                                                <td><?php echo $server['server_port']; ?></td>
                                             </tr>
-                                        <?php endwhile; ?>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
