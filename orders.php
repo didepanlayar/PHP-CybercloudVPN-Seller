@@ -9,7 +9,7 @@ $title = 'Orders';
 include 'header.php';
 include 'sidebar.php';
 
-$sql_orders  = "SELECT * FROM orders";
+$sql_orders  = "SELECT * FROM orders WHERE order_status != 0";
 $query_orders = mysqli_prepare($connection, $sql_orders);
 mysqli_stmt_execute($query_orders);
 $result = mysqli_stmt_get_result($query_orders);
@@ -68,33 +68,43 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                             <h5 class="modal-title" id="ModalCenterTitle">Detail</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <form>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Name</label>
-                                                                <input type="text" class="form-control" value="<?php echo $order['order_name']; ?>" disabled>
+                                                        <form action="includes/controller.php" method="POST">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="order-id" value="<?php echo $order['order_id']; ?>">
+                                                                <div class="mb-3">
+                                                                    <label for="protocol" class="form-label">Protocol</label>
+                                                                    <input type="text" class="form-control" id="protocol" name="protocol" value="<?php echo $order['order_protocol']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="name" class="form-label">Name</label>
+                                                                    <input type="text" class="form-control" id="name" name="name" value="<?php echo $order['order_name']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="whatsapp" class="form-label">WhatsApp</label>
+                                                                    <input type="number" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo $order['order_phone']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="server" class="form-label">Server</label>
+                                                                    <input type="text" class="form-control" id="server" name="server" value="<?php echo $order['order_server']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="host" class="form-label">Host/IP</label>
+                                                                    <input type="text" class="form-control" id="host" name="host" value="<?php echo $order['order_host']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="username" class="form-label">Username</label>
+                                                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo $order['order_username']; ?>" readonly>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="expired" class="form-label">Expired</label>
+                                                                    <input type="date" class="form-control" id="expired" name="expired" value="<?php echo $order['order_expired']; ?>" readonly>
+                                                                </div>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Server</label>
-                                                                <input type="text" class="form-control" value="<?php echo $order['order_server']; ?>" disabled>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" name="send-delete">Delete</button>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Host</label>
-                                                                <input type="text" class="form-control" value="<?php echo $order['order_host']; ?>" disabled>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Username</label>
-                                                                <input type="text" class="form-control" value="<?php echo $order['order_username']; ?>" disabled>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Expired</label>
-                                                                <input type="date" class="form-control" value="<?php echo $order['order_expired']; ?>" disabled>
-                                                            </div>
-                                                        </div>
                                                         </form>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

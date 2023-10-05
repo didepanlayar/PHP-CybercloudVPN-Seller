@@ -345,3 +345,33 @@ if (isset($_POST['send-renew'])) {
     header('Location: ../renew.php');
     exit();
 }
+
+if (isset($_POST['send-delete'])) {
+    $id             = $_POST['order-id'];
+    $protocol       = $_POST['protocol'];
+    $name           = $_POST['name'];
+    $phone          = $_POST['whatsapp'];
+    $server         = $_POST['server'];
+    $username       = $_POST['username'];
+    $status         = 0;
+    $expired        = $_POST['expired'];
+    $bot_message    = "Pengguna berhasil dihapus.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+
+    $sql_delete   = "UPDATE orders SET order_status = ? WHERE order_id = ?";
+    $query_delete = mysqli_prepare($connection, $sql_delete);
+    mysqli_stmt_bind_param($query_delete, 'ii', $status, $id);
+
+    if (mysqli_stmt_execute($query_delete)) {
+        send_group($name, $phone, $bot_message, $data);
+        $_SESSION['status'] = 'success';
+        $_SESSION['status_message'] = 'Order deleted.';
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = mysqli_error($connection);
+    }
+
+    mysqli_close($connection);
+
+    header('Location: ../orders.php');
+    exit();
+}
