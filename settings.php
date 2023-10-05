@@ -11,7 +11,13 @@ include 'sidebar.php';
 
 ?>
             <div class="main-wrapper">
-                <?php status_message(); ?>
+                <?php if (isset($_SESSION['status'])) : ?>
+                    <div class="row px-5 row-close">
+                        <div class="col">
+                            <?php status_message(); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 <div class="row">
                     <div class="col">
                         <div class="card">
