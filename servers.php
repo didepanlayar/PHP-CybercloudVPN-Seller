@@ -30,7 +30,7 @@ $servers = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <div class="card">
                             <div class="card-body">
                                 <button type="button" class="btn btn-outline-primary m-b-md" data-bs-toggle="modal" data-bs-target="#upload-server"><i class="fa fa-upload"></i> Upload Server</button>
-                                <table id="table-server" class="display" style="width:100%">
+                                <table id="table-server" class="display nowrap" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>Name</th>

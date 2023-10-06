@@ -30,7 +30,7 @@ if (mysqli_stmt_execute($query_histories)) {
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-                                <table id="table-server" class="display" style="width:100%">
+                                <table id="table-server" class="display nowrap" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
@@ -48,15 +48,13 @@ if (mysqli_stmt_execute($query_histories)) {
                                                 <td><?php echo $history['order_server']; ?></td>
                                                 <td><?php echo $history['order_protocol']; ?></td>
                                                 <td>
-                                                    <center>
-                                                        <?php if ($history['order_status'] == 1) : ?>
-                                                            <span class="badge rounded-pill bg-success">Created</span>
-                                                        <?php elseif ($history['order_status'] == 2) : ?>
-                                                            <span class="badge rounded-pill bg-info">Updated</span>
-                                                        <?php else : ?>
-                                                            <span class="badge rounded-pill bg-danger">Deleted</span>
-                                                        <?php endif; ?>
-                                                    </center>
+                                                    <?php if ($history['order_status'] == 1) : ?>
+                                                        <span class="badge rounded-pill bg-success">Created</span>
+                                                    <?php elseif ($history['order_status'] == 2) : ?>
+                                                        <span class="badge rounded-pill bg-info">Updated</span>
+                                                    <?php else : ?>
+                                                        <span class="badge rounded-pill bg-danger">Deleted</span>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; endif; ?>

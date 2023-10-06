@@ -41,7 +41,11 @@ $(document).ready(function() {
 
     if (tableServer) {
         $('#table-server').DataTable({
-            "ordering": false
+            "ordering": false,
+            "responsive": true,
+            "rowReorder": {
+                "selector": 'td:nth-child(2)'
+            }
         });
     }
 
