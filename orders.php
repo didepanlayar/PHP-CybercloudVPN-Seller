@@ -9,11 +9,13 @@ $title = 'Orders';
 include 'header.php';
 include 'sidebar.php';
 
-$sql_orders  = "SELECT * FROM orders WHERE order_status != 0";
+$sql_orders  = "SELECT * FROM orders WHERE order_status != 0 ORDER BY order_id DESC";
 $query_orders = mysqli_prepare($connection, $sql_orders);
-mysqli_stmt_execute($query_orders);
-$result = mysqli_stmt_get_result($query_orders);
-$orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+if (mysqli_stmt_execute($query_orders)) { 
+    $result = mysqli_stmt_get_result($query_orders);
+    $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 
 ?>
             <div class="main-wrapper">
@@ -29,6 +31,7 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <div class="card">
                             <div class="card-body">
                                 <a href="<?php echo $data['siteurl']; ?>/create.php" class="btn btn-outline-primary btn-sm m-b-md"><i class="fa fa-plus"></i> Create</a>
+                                <a href="<?php echo $data['siteurl']; ?>/history.php" class="btn btn-outline-success btn-sm m-b-md"><i class="fa fa-history"></i> History</a>
                                 <table id="table-server" class="display" style="width:100%">
                                     <thead>
                                         <tr>
@@ -41,19 +44,21 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($orders as $order) : ?>
+                                        <?php if ($orders) : foreach ($orders as $order) : ?>
                                             <tr>
                                                 <td><?php echo $order['order_username']; ?></td>
                                                 <td><?php echo $order['order_server']; ?></td>
                                                 <td><?php echo $order['order_protocol']; ?></td>
                                                 <td>
-                                                    <?php if ($order['order_status'] == 1) : ?>
-                                                        <span class="badge rounded-pill bg-success">Active</span>
-                                                    <?php elseif ($order['order_status'] == 2) : ?>
-                                                        <span class="badge rounded-pill bg-info">Renew</span>
-                                                    <?php else : ?>
-                                                        <span class="badge rounded-pill bg-danger">Deactive</span>
-                                                    <?php endif; ?>
+                                                    <center>
+                                                        <?php if ($order['order_status'] == 1) : ?>
+                                                            <span class="badge rounded-pill bg-success">Active</span>
+                                                        <?php elseif ($order['order_status'] == 2) : ?>
+                                                            <span class="badge rounded-pill bg-info">Update</span>
+                                                        <?php else : ?>
+                                                            <span class="badge rounded-pill bg-danger">Deactive</span>
+                                                        <?php endif; ?>
+                                                    </center>
                                                 </td>
                                                 <td><?php echo $order['order_expired']; ?></td>
                                                 <td>
@@ -70,7 +75,10 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                         </div>
                                                         <form action="includes/controller.php" method="POST">
                                                             <div class="modal-body">
-                                                                <input type="hidden" name="order-id" value="<?php echo $order['order_id']; ?>">
+                                                                <div class="mb-3">
+                                                                    <label for="order-id" class="form-label">Order ID</label>
+                                                                    <input type="text" class="form-control" id="order-id" name="order-id" value="<?php echo $order['order_id']; ?>" readonly>
+                                                                </div>
                                                                 <div class="mb-3">
                                                                     <label for="protocol" class="form-label">Protocol</label>
                                                                     <input type="text" class="form-control" id="protocol" name="protocol" value="<?php echo $order['order_protocol']; ?>" readonly>
@@ -108,7 +116,7 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php endforeach; ?>
+                                        <?php endforeach; endif; ?>
                                     </tbody>
                                 </table>
                             </div>
