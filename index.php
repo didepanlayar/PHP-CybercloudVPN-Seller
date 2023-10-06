@@ -26,6 +26,8 @@ $total_vmess  = get_order($connection, 'Vmess');
 $total_vless  = get_order($connection, 'Vless');
 $total_trojan = get_order($connection, 'Trojan');
 
+mysqli_close($connection);
+
 ?>
             <div class="main-wrapper">
                 <div class="row px-3">
