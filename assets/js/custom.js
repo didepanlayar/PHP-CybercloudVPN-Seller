@@ -40,7 +40,9 @@ $(document).ready(function() {
     const tableServer = document.getElementById('table-server');
 
     if (tableServer) {
-        $('#table-server').DataTable();
+        $('#table-server').DataTable({
+            "ordering": false
+        });
     }
 
     const createPage = document.getElementById('protocol');
