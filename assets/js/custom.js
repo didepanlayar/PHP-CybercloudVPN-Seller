@@ -40,7 +40,13 @@ $(document).ready(function() {
     const tableServer = document.getElementById('table-server');
 
     if (tableServer) {
-        $('#table-server').DataTable();
+        $('#table-server').DataTable({
+            "ordering": false,
+            "responsive": true,
+            "rowReorder": {
+                "selector": 'td:nth-child(2)'
+            }
+        });
     }
 
     const createPage = document.getElementById('protocol');

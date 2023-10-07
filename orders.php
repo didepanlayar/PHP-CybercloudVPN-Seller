@@ -9,11 +9,13 @@ $title = 'Orders';
 include 'header.php';
 include 'sidebar.php';
 
-$sql_orders  = "SELECT * FROM orders WHERE order_status != 0";
+$sql_orders  = "SELECT * FROM orders WHERE order_status != 0 ORDER BY order_id DESC";
 $query_orders = mysqli_prepare($connection, $sql_orders);
-mysqli_stmt_execute($query_orders);
-$result = mysqli_stmt_get_result($query_orders);
-$orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+if (mysqli_stmt_execute($query_orders)) { 
+    $result = mysqli_stmt_get_result($query_orders);
+    $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 
 ?>
             <div class="main-wrapper">
@@ -28,29 +30,30 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-                                <a href="<?php echo $data['siteurl']; ?>/create.php" class="btn btn-outline-primary btn-sm m-b-md"><i class="fa fa-plus"></i> Create</a>
-                                <table id="table-server" class="display" style="width:100%">
+                                <a href="create.php" class="btn btn-outline-primary btn-sm m-b-md"><i class="fa fa-plus"></i> Create</a>
+                                <a href="history.php" class="btn btn-outline-success btn-sm m-b-md"><i class="fa fa-history"></i> History</a>
+                                <table id="table-server" class="display nowrap" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>Username</th>
-                                            <th>Host</th>
                                             <th>Protocol</th>
+                                            <th>Host</th>
                                             <th>status</th>
                                             <th>Expired</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($orders as $order) : ?>
+                                        <?php if ($orders) : foreach ($orders as $order) : ?>
                                             <tr>
                                                 <td><?php echo $order['order_username']; ?></td>
-                                                <td><?php echo $order['order_server']; ?></td>
                                                 <td><?php echo $order['order_protocol']; ?></td>
+                                                <td><?php echo $order['order_server']; ?></td>
                                                 <td>
                                                     <?php if ($order['order_status'] == 1) : ?>
                                                         <span class="badge rounded-pill bg-success">Active</span>
                                                     <?php elseif ($order['order_status'] == 2) : ?>
-                                                        <span class="badge rounded-pill bg-info">Renew</span>
+                                                        <span class="badge rounded-pill bg-info">Update</span>
                                                     <?php else : ?>
                                                         <span class="badge rounded-pill bg-danger">Deactive</span>
                                                     <?php endif; ?>
@@ -70,34 +73,53 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                         </div>
                                                         <form action="includes/controller.php" method="POST">
                                                             <div class="modal-body">
-                                                                <input type="hidden" name="order-id" value="<?php echo $order['order_id']; ?>">
-                                                                <div class="mb-3">
-                                                                    <label for="protocol" class="form-label">Protocol</label>
-                                                                    <input type="text" class="form-control" id="protocol" name="protocol" value="<?php echo $order['order_protocol']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="order-id" class="col-sm-4 col-form-label">Order ID</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="order-id" name="order-id" value="<?php echo $order['order_id']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="name" class="form-label">Name</label>
-                                                                    <input type="text" class="form-control" id="name" name="name" value="<?php echo $order['order_name']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="protocol" class="col-sm-4 col-form-label">Protocol</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="protocol" name="protocol" value="<?php echo $order['order_protocol']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="whatsapp" class="form-label">WhatsApp</label>
-                                                                    <input type="number" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo $order['order_phone']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="name" class="col-sm-4 col-form-label">Name</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="name" name="name" value="<?php echo $order['order_name']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="server" class="form-label">Server</label>
-                                                                    <input type="text" class="form-control" id="server" name="server" value="<?php echo $order['order_server']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="whatsapp" class="col-sm-4 col-form-label">WhatsApp</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="number" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo $order['order_phone']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="host" class="form-label">Host/IP</label>
-                                                                    <input type="text" class="form-control" id="host" name="host" value="<?php echo $order['order_host']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="server" class="col-sm-4 col-form-label">Server</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="server" name="server" value="<?php echo $order['order_server']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="username" class="form-label">Username</label>
-                                                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo $order['order_username']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="host" class="col-sm-4 col-form-label">Host/IP</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="host" name="host" value="<?php echo $order['order_host']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label for="expired" class="form-label">Expired</label>
-                                                                    <input type="date" class="form-control" id="expired" name="expired" value="<?php echo $order['order_expired']; ?>" readonly>
+                                                                <div class="row mb-3">
+                                                                    <label for="username" class="col-sm-4 col-form-label">Username</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="text" class="form-control" id="username" name="username" value="<?php echo $order['order_username']; ?>" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-3">
+                                                                    <label for="expired" class="col-sm-4 col-form-label">Expired</label>
+                                                                    <div class="col-sm-8">
+                                                                        <input type="date" class="form-control" id="expired" name="expired" value="<?php echo $order['order_expired']; ?>" readonly>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -108,7 +130,7 @@ $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php endforeach; ?>
+                                        <?php endforeach; endif; ?>
                                     </tbody>
                                 </table>
                             </div>
