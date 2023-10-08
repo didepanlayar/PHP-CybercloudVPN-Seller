@@ -1,1 +1,9 @@
 composer require phpoffice/phpspreadsheet;
+# Backup Database from Docker
+docker exec container_name mysqldump --user root --password=root database_name > database_name.sql;
+# Restore Database to Remote
+mysql -u root -p database_name < database_name.sql;
+# Cron job reminder.php
+chmod +x reminder.php;
+crontab -e;
+0 10 * * * /usr/bin/php /<Directory>/reminder.php;
