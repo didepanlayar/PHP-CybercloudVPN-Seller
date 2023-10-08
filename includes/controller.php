@@ -1,8 +1,7 @@
 <?php
 
-session_start();
-
 require_once 'config.php';
+require_once 'session.php';
 require_once 'bot.php';
 
 if (isset($_POST['login'])) {
@@ -19,7 +18,6 @@ if (isset($_POST['login'])) {
             $token = $row['user_token'];
 
             if (password_verify($authentication, $token)) {
-                session_start();
                 $_SESSION['token'] = true;
                 header('Location: ../');
                 exit();
