@@ -280,7 +280,7 @@ if (isset($_POST['send-create'])) {
                     $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort: 443\nKey: $key\nNetwork: ws\nPath: /trojan\nMulti Path: /yourbug/trojan\nExpired: $expired\n\nConfig TLS:\n$trojan_tls\n\nTerima kasih telah menggunakan layanan kami.";
                 }
 
-                $bot_message  = "Selamat! Akun VPN Premium berhasil dibuat.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+                $bot_message  = "Pembelian Akun VPN Premium berhasil.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
                 $status       = 1;
 
                 $sql_order   = "INSERT INTO orders (order_id, order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_created, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -328,7 +328,7 @@ if (isset($_POST['send-renew'])) {
     $status         = 2;
     $expired        = $_POST['expired'];
     $new_message    = "Masa aktif akun VPN Premium anda berhasil diperpanjang, berikut adalah informasi akun anda:\n\n$protocol\nServer: $server\nHost: $host\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
-    $bot_message    = "Pengguna Akun VPN Premium berhasil diperbarui.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+    $bot_message    = "Akun VPN Premium berhasil diperbarui.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
     $today_date     = date("Y-m-d");
 
     if ($id) {
@@ -360,32 +360,42 @@ if (isset($_POST['send-renew'])) {
 
 if (isset($_POST['send-delete'])) {
     $id             = $_POST['order-id'];
-    $protocol       = $_POST['protocol'];
-    $name           = $_POST['name'];
-    $phone          = $_POST['whatsapp'];
-    $server         = $_POST['server'];
-    $username       = $_POST['username'];
-    $status         = 0;
-    $expired        = $_POST['expired'];
-    $bot_message    = "Pengguna berhasil dihapus.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
-    $today_date     = '2023-11-01';
 
-    $sql_delete   = "UPDATE orders SET order_status = ?, order_modified = ? WHERE order_id = ?";
-    $query_delete = mysqli_prepare($connection, $sql_delete);
-    mysqli_stmt_bind_param($query_delete, 'isi', $status, $today_date, $id);
+    $sql_orders  = "SELECT * FROM orders WHERE order_id = ?";
+    $query_orders = mysqli_prepare($connection, $sql_orders);
+    mysqli_stmt_bind_param($query_orders, 'i', $id);
+    mysqli_stmt_execute($query_orders);
+    $result = mysqli_stmt_get_result($query_orders);
+    $row    = mysqli_fetch_assoc($result);
 
-    if (mysqli_stmt_execute($query_delete)) {
-        $sql_history   = "INSERT INTO histories (order_id, order_status, history_date) VALUES (?, ?, ?)";
-        $query_history = mysqli_prepare($connection, $sql_history);
-        mysqli_stmt_bind_param($query_history, 'iis', $id, $status, $today_date);
-        mysqli_stmt_execute($query_history);
-        mysqli_stmt_close($query_history);
-        send_group($name, $phone, $bot_message, $data);
-        $_SESSION['status'] = 'success';
-        $_SESSION['status_message'] = 'Order deleted.';
-    } else {
-        $_SESSION['status'] = 'error';
-        $_SESSION['status_message'] = mysqli_error($connection);
+    if ($row) {
+        $protocol       = $row['order_protocol'];
+        $name           = $row['order_name'];
+        $phone          = $row['order_phone'];
+        $server         = $row['order_server'];
+        $username       = $row['order_username'];
+        $status         = 0;
+        $expired        = $row['order_expired'];
+        $bot_message    = "Akun VPN Premium berhasil dihapus.\n\n$protocol\nServer: $server\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+        $today_date     = date("Y-m-d");
+
+        $sql_delete   = "UPDATE orders SET order_status = ?, order_modified = ? WHERE order_id = ?";
+        $query_delete = mysqli_prepare($connection, $sql_delete);
+        mysqli_stmt_bind_param($query_delete, 'isi', $status, $today_date, $id);
+
+        if (mysqli_stmt_execute($query_delete)) {
+            $sql_history   = "INSERT INTO histories (order_id, order_status, history_date) VALUES (?, ?, ?)";
+            $query_history = mysqli_prepare($connection, $sql_history);
+            mysqli_stmt_bind_param($query_history, 'iis', $id, $status, $today_date);
+            mysqli_stmt_execute($query_history);
+            mysqli_stmt_close($query_history);
+            send_group($name, $phone, $bot_message, $data);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_message'] = 'Order deleted.';
+        } else {
+            $_SESSION['status'] = 'error';
+            $_SESSION['status_message'] = mysqli_error($connection);
+        }
     }
 
     mysqli_close($connection);

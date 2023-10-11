@@ -9,8 +9,8 @@ $title = 'Renew';
 include 'header.php';
 include 'sidebar.php';
 
-if (isset($_REQUEST['id'])) {
-    $order_id = $_REQUEST['id'];
+if (isset($_POST['send-renew'])) {
+    $order_id = $_POST['id'];
 
     $sql_get_order   = "SELECT * FROM orders WHERE order_id = ?";
     $query_get_order = mysqli_prepare($connection, $sql_get_order);
@@ -45,13 +45,13 @@ if (isset($_REQUEST['id'])) {
                             <div class="card-body">
                                 <form action="includes/controller.php" method="POST">
                                     <div class="modal-body">
-                                        <?php if (isset($_REQUEST['id'])) : ?>
+                                        <?php if (isset($_POST['send-renew'])) : ?>
                                             <input type="hidden" name="order-id" value="<?php echo $order_id; ?>">
                                             <input type="hidden" name="server" value="<?php echo $get_server; ?>">
                                         <?php endif; ?>
                                         <div class="mb-3">
                                             <label for="protocol" class="form-label">Protocol</label>
-                                            <input type="text" class="form-control" id="protocol" name="protocol" placeholder="SSH & OpenVPN" value="<?php echo $get_protocol; ?>" readonly required>
+                                            <input type="text" class="form-control" name="protocol" placeholder="SSH & OpenVPN" value="<?php echo $get_protocol; ?>" readonly required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
