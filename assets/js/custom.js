@@ -50,12 +50,13 @@ $(document).ready(function() {
     }
 
     const createPage = document.getElementById('protocol');
-    const createSsh = document.getElementById('create-ssh');
-    const createVmess = document.getElementById('create-vmess');
-    const createVless = document.getElementById('create-vless');
-    const createTrojan = document.getElementById('create-trojan');
 
     if (createPage) {
+        const createSsh = document.getElementById('create-ssh');
+        const createVmess = document.getElementById('create-vmess');
+        const createVless = document.getElementById('create-vless');
+        const createTrojan = document.getElementById('create-trojan');
+        
         createSsh.style.display = 'none';
         createVmess.style.display = 'none';
         createVless.style.display = 'none';
