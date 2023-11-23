@@ -1,8 +1,10 @@
 <?php
 
 require_once 'config.php';
+require_once 'log.php';
 
 function send_user($name, $phone, $new_message, $data) {
+    $log_name = '[User]';
     // WhatsApp: User
     $curl_send = curl_init();
     curl_setopt_array($curl_send, array(
@@ -26,9 +28,12 @@ function send_user($name, $phone, $new_message, $data) {
     ));
     $response_send = curl_exec($curl_send);
     curl_close($curl_send);
+    write_log($log_name, $response_send);
 }
 
 function send_group($name, $phone, $bot_message, $data) {
+
+    $log_name = '[Group]';
 
     // WhatsApp: Group
     $curl_whatsapp = curl_init();
@@ -53,6 +58,7 @@ function send_group($name, $phone, $bot_message, $data) {
     ));
     $response_send = curl_exec($curl_whatsapp);
     curl_close($curl_whatsapp);
+    write_log($log_name, $response_send);
 
     // Telegram: Group
     $curl_telegram = curl_init();
@@ -71,6 +77,7 @@ function send_group($name, $phone, $bot_message, $data) {
     ));
     $response_send = curl_exec($curl_telegram);
     curl_close($curl_telegram);
+    write_log($log_name, $response_send);
 }
 
 ?>
