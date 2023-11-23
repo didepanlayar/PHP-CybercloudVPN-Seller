@@ -26,6 +26,23 @@ $total_vmess  = get_order($connection, 'Vmess');
 $total_vless  = get_order($connection, 'Vless');
 $total_trojan = get_order($connection, 'Trojan');
 
+function get_active($connection, $protocol) {
+    $sql_account = "SELECT COUNT(*) as active FROM orders WHERE order_protocol = '$protocol' AND order_status != 0";
+    $query_account = mysqli_query($connection, $sql_account);
+
+    if ($query_account) {
+        $result = mysqli_fetch_assoc($query_account);
+        return $result['active'];
+    } else {
+        return 0;
+    }
+}
+
+$active_ssh    = get_active($connection, 'SSH & OpenVPN');
+$active_vmess  = get_active($connection, 'Vmess');
+$active_vless  = get_active($connection, 'Vless');
+$active_trojan = get_active($connection, 'Trojan');
+
 mysqli_close($connection);
 
 ?>
@@ -42,11 +59,11 @@ mysqli_close($connection);
                                             </div>
                                             <div class="tr-text">
                                                 <h4 class="text-white">SSH & OpenVPN</h4>
-                                                <p>Total</p>
+                                                <p>Total: <?php echo $total_ssh; ?></p>
                                             </div>
                                         </div>
                                         <div class="tr-rate">
-                                            <p><span class="text-success"><?php echo $total_ssh; ?></span></p>
+                                            <p><span class="text-success"><?php echo $active_ssh; ?></span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -64,11 +81,11 @@ mysqli_close($connection);
                                             </div>
                                             <div class="tr-text">
                                                 <h4 class="text-white">Vmess</h4>
-                                                <p>Total</p>
+                                                <p>Total: <?php echo $total_vmess; ?></p>
                                             </div>
                                         </div>
                                         <div class="tr-rate">
-                                            <p><span class="text-success"><?php echo $total_vmess; ?></span></p>
+                                            <p><span class="text-success"><?php echo $active_vmess; ?></span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -86,11 +103,11 @@ mysqli_close($connection);
                                             </div>
                                             <div class="tr-text">
                                                 <h4 class="text-white">Vless</h4>
-                                                <p>Total</p>
+                                                <p>Total: <?php echo $total_vless; ?></p>
                                             </div>
                                         </div>
                                         <div class="tr-rate">
-                                            <p><span class="text-success"><?php echo $total_vless; ?></span></p>
+                                            <p><span class="text-success"><?php echo $active_vless; ?></span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -108,11 +125,11 @@ mysqli_close($connection);
                                             </div>
                                             <div class="tr-text">
                                                 <h4 class="text-white">Trojan</h4>
-                                                <p>Total</p>
+                                                <p>Total: <?php echo $total_trojan; ?></p>
                                             </div>
                                         </div>
                                         <div class="tr-rate">
-                                            <p><span class="text-success"><?php echo $total_trojan; ?></span></p>
+                                            <p><span class="text-success"><?php echo $active_trojan; ?></span></p>
                                         </div>
                                     </div>
                                 </div>
