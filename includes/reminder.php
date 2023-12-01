@@ -4,13 +4,13 @@ require_once 'config.php';
 require_once 'log.php';
 
 $today = date("Y-m-d");
-$log_name = '[Reminder]';
 
-$sql_expired   = "SELECT order_protocol, order_name, order_phone, order_server, order_host, order_username, order_expired FROM orders WHERE order_expired = DATE_ADD('$today', INTERVAL 1 DAY)";
+$sql_expired   = "SELECT order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_expired FROM orders WHERE order_expired = DATE_ADD('$today', INTERVAL 1 DAY) AND order_status != 0";
 $query_expired = mysqli_query($connection, $sql_expired);
 
 if ($query_expired) {
     while ($row = mysqli_fetch_assoc($query_expired)) {
+        $log_name    = '[Reminder]';
         $protocol    = $row['order_protocol'];
         $name        = $row['order_name'];
         $phone       = $row['order_phone'];
