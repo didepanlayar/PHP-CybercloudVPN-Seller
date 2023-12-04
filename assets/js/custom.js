@@ -42,7 +42,7 @@ $(document).ready(function() {
     if (tableServer) {
         $('#table-server').DataTable({
             "ordering": false,
-            "responsive": true,
+            "sScrollX": '100%',
             "rowReorder": {
                 "selector": 'td:nth-child(2)'
             }

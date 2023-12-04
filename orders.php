@@ -60,19 +60,13 @@ if (mysqli_stmt_execute($query_orders)) {
                                                 </td>
                                                 <td><?php echo $order['order_expired']; ?></td>
                                                 <td>
-                                                    <div class="row">
-                                                        <div class="col-4 col-md-4 col-sm-4">
-                                                            <button type="button" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#view-<?php echo $order['order_id']; ?>"><i class="fa fa-eye"></i></button>
-                                                        </div>
-                                                        <div class="col-4 col-md-4 col-sm-4">
-                                                            <form action="renew.php" method="POST">
-                                                                <input type="hidden" name="id" value="<?php echo $order['order_id']; ?>">
-                                                                <button type="submit" class="btn btn-outline-primary btn-sm" name="send-renew"><i class="fa fa-retweet"></i></button>
-                                                            </form>
-                                                        </div>
-                                                        <div class="col-4 col-md-4 col-sm-4">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-<?php echo $order['order_id']; ?>"><i class="fa fa-trash"></i></button>
-                                                        </div>
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#view-<?php echo $order['order_id']; ?>"><i class="fa fa-eye"></i></button>
+                                                        <form action="renew.php" method="POST">
+                                                            <input type="hidden" name="id" value="<?php echo $order['order_id']; ?>">
+                                                            <button type="submit" class="btn btn-primary btn-sm" name="send-renew"><i class="fa fa-retweet"></i></button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-<?php echo $order['order_id']; ?>"><i class="fa fa-trash"></i></button>
                                                     </div>
                                                 </td>
                                             </tr>
