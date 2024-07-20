@@ -235,6 +235,7 @@ if (isset($_POST['send-create'])) {
     $protocol       = $_POST['protocol'];
     $name           = $_POST['name'];
     $phone          = $_POST['whatsapp'];
+    $server_name    = $_POST['server-name'];
     $host           = $_POST['host'];
     $expired        = $_POST['expired'];
     $username       = $_POST['username'];
@@ -253,62 +254,40 @@ if (isset($_POST['send-create'])) {
     $today_time     = date("H:i:s");
     $today_unique   = strtotime($today_date . ' ' . $today_time);
 
-    if (!empty($host)) {
-        $sql_get_server   = "SELECT server_name FROM servers WHERE server_host = ?";
-        $query_get_server = mysqli_prepare($connection, $sql_get_server);
-        mysqli_stmt_bind_param($query_get_server, 's', $host);
-        mysqli_stmt_execute($query_get_server);
+    if ($protocol == 'create-ssh') {
+        $get_protocol = 'SSH & OpenVPN';
+        $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nHost: $host\nWebsocket SSL: 443\nWebsocket HTTP: 80\nUsername: $username\nPassword: $password\nExpired: $expired\n\nPayload CDN:\n$payload_cdn\n\nPayload Path:\n$payload_path\n\nTerima kasih telah menggunakan layanan kami.";
+    } elseif ($protocol == 'create-vmess') {
+        $get_protocol = 'Vmess';
+        $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vmess_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vmess_tls\n\nConfig None TLS:\n$vmess_ntls\n\nTerima kasih telah menggunakan layanan kami.";
+    } elseif ($protocol == 'create-vless') {
+        $get_protocol = 'Vless';
+        $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vless_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vless_tls\n\nConfig None TLS:\n$vless_ntls\n\nTerima kasih telah menggunakan layanan kami.";
+    } elseif ($protocol == 'create-trojan') {
+        $get_protocol = 'Trojan';
+        $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort: 443\nKey: $key\nNetwork: ws\nPath: /trojan\nMulti Path: /yourbug/trojan\nExpired: $expired\n\nConfig TLS:\n$trojan_tls\n\nTerima kasih telah menggunakan layanan kami.";
+    }
 
-        if ($query_get_server) {
-            $result = mysqli_stmt_get_result($query_get_server);
-            $row = mysqli_fetch_assoc($result);
+    $bot_message  = "Pembelian Akun VPN Premium berhasil.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
+    $status       = 1;
 
-            if ($row) {
-                $server_name = $row['server_name'];
+    $sql_order   = "INSERT INTO orders (order_id, order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_created, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $query_order = mysqli_prepare($connection, $sql_order);
+    mysqli_stmt_bind_param($query_order, 'isssssssss', $today_unique, $get_protocol, $name, $phone, $server_name, $host, $username, $status, $today_date, $expired);
 
-                if ($protocol == 'create-ssh') {
-                    $get_protocol = 'SSH & OpenVPN';
-                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nHost: $host\nWebsocket SSL: 443\nWebsocket HTTP: 80\nUsername: $username\nPassword: $password\nExpired: $expired\n\nPayload CDN:\n$payload_cdn\n\nPayload Path:\n$payload_path\n\nTerima kasih telah menggunakan layanan kami.";
-                } elseif ($protocol == 'create-vmess') {
-                    $get_protocol = 'Vmess';
-                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vmess_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vmess_tls\n\nConfig None TLS:\n$vmess_ntls\n\nTerima kasih telah menggunakan layanan kami.";
-                } elseif ($protocol == 'create-vless') {
-                    $get_protocol = 'Vless';
-                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort TLS: 443\nPort None TLS: 80\nUUID: $vless_uuid\nAlterID: 0\nSecurity: auto\nNetwork: ws\nPath: /vmess\nMulti Path: /yourbug\nExpired: $expired\n\nConfig TLS:\n$vless_tls\n\nConfig None TLS:\n$vless_ntls\n\nTerima kasih telah menggunakan layanan kami.";
-                } elseif ($protocol == 'create-trojan') {
-                    $get_protocol = 'Trojan';
-                    $new_message  = "Informasi Akun VPN Premium Cybercloud VPN\n\n$get_protocol\nServer: $server_name\nRemarks: $username\nHost: $host\nPort: 443\nKey: $key\nNetwork: ws\nPath: /trojan\nMulti Path: /yourbug/trojan\nExpired: $expired\n\nConfig TLS:\n$trojan_tls\n\nTerima kasih telah menggunakan layanan kami.";
-                }
-
-                $bot_message  = "Pembelian Akun VPN Premium berhasil.\n\n$get_protocol\nServer: $server_name\nHost: **********\nUsername: $username\nExpired: $expired\n\nTerima kasih telah menggunakan layanan Cybercloud VPN.";
-                $status       = 1;
-
-                $sql_order   = "INSERT INTO orders (order_id, order_protocol, order_name, order_phone, order_server, order_host, order_username, order_status, order_created, order_expired) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $query_order = mysqli_prepare($connection, $sql_order);
-                mysqli_stmt_bind_param($query_order, 'isssssssss', $today_unique, $get_protocol, $name, $phone, $server_name, $host, $username, $status, $today_date, $expired);
-
-                if (mysqli_stmt_execute($query_order)) {
-                    $sql_history   = "INSERT INTO histories (order_id, order_status, history_date) VALUES (?, ?, ?)";
-                    $query_history = mysqli_prepare($connection, $sql_history);
-                    mysqli_stmt_bind_param($query_history, 'iis', $today_unique, $status, $today_date);
-                    mysqli_stmt_execute($query_history);
-                    mysqli_stmt_close($query_history);
-                    send_user($name, $phone, $new_message, $data);
-                    send_group($name, $phone, $bot_message, $data);
-                    $_SESSION['status'] = 'success';
-                    $_SESSION['status_message'] = 'Order completed.';
-                } else {
-                    $_SESSION['status'] = 'error';
-                    $_SESSION['status_message'] = $mysqli_error($connection);
-                }
-            } else {
-                $_SESSION['status'] = 'error';
-                $_SESSION['status_message'] = 'Server not found';
-            }
-        } else {
-            $_SESSION['status'] = 'error';
-            $_SESSION['status_message'] = $mysqli_error($connection);
-        }
+    if (mysqli_stmt_execute($query_order)) {
+        $sql_history   = "INSERT INTO histories (order_id, order_status, history_date) VALUES (?, ?, ?)";
+        $query_history = mysqli_prepare($connection, $sql_history);
+        mysqli_stmt_bind_param($query_history, 'iis', $today_unique, $status, $today_date);
+        mysqli_stmt_execute($query_history);
+        mysqli_stmt_close($query_history);
+        send_user($name, $phone, $new_message, $data);
+        send_group($name, $phone, $bot_message, $data);
+        $_SESSION['status'] = 'success';
+        $_SESSION['status_message'] = 'Order completed.';
+    } else {
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_message'] = $mysqli_error($connection);
     }
 
     mysqli_close($connection);

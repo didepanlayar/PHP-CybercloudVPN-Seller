@@ -1,9 +1,9 @@
 <?php
 
-$serverhost   = "localhost";
-$username     = "root";
-$password     = "root";
-$database     = "database_name";
+$serverhost   = "database";
+$username     = "didepanlayar";
+$password     = "eQYCZ]3z3h";
+$database     = "cybercloudvpn_seller";
 
 $connection = mysqli_connect($serverhost, $username, $password, $database);
 
